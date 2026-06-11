@@ -1,6 +1,6 @@
-# DX Exporter — Cinema 4D → DirectX `.x` 
+# DX Exporter — Cinema 4D → DirectX `.x` (Tiltan Viewer pipeline)
 
-A production Cinema 4D plugin that exports scene hierarchies to **DirectX ASCII . It handles the parts a generic exporter doesn't: a strict parent/child node hierarchy, LOD and damage-state naming conventions, per-object multi-material assignment, MeshNormals vertex format, and a coordinate-system conversion that keeps multi-level rigs (turrets, launchers, helper nulls) spatially coherent.
+A production Cinema 4D plugin that exports scene hierarchies to **DirectX ASCII `.x`** for the Tiltan Model Viewer / AXE simulation pipeline. It handles the parts a generic exporter doesn't: a strict parent/child node hierarchy, LOD and damage-state naming conventions, per-object multi-material assignment, MeshNormals vertex format, and a coordinate-system conversion that keeps multi-level rigs (turrets, launchers, helper nulls) spatially coherent.
 
 ![Exporter UI](docs/ui_exporter.png)
 
@@ -17,12 +17,14 @@ The exporter walks a Cinema 4D object tree and emits a `.x` file whose structure
 - **Per-object mesh extraction.** Geometry is read from polygon objects (and from the cache of generators/deformers where present), including normals, UVs, and optional vertex color / tangent / bitangent.
 - **Multi-material support.** Per-polygon material assignment via selection tags is resolved into the exported material blocks, with texture-map copying alongside the `.x`.
 - **Coordinate-system conversion.** A configurable axis mapping plus a similarity transform on each frame matrix keeps the whole hierarchy consistent (see *Engineering highlights*).
-- **MeshNormals geometry format**, meters units, P/N splitter-safe output — the specific profile the T Viewer expects.
+- **MeshNormals geometry format**, meters units, P/N splitter-safe output — the specific profile the Tiltan Viewer expects.
 - **In-editor validation** of the hierarchy before export, surfacing problems instead of producing a broken file.
 
 ## Why use it
 
 A vanilla `.x` export gets geometry out but routinely breaks on the things that matter for a real-time asset: the rig flattens, LOD/damage variants lose their naming, pivots drift, or the model lands rotated or mis-scaled in the target engine. This exporter is built around those failure modes specifically, so an artist can model in Cinema 4D using a clean naming convention and get an asset that drops into the viewer **standing on its wheels, correctly scaled, with its turret and launcher still pivoting around the right points.**
+
+![Result in the Tiltan Model Viewer](docs/tiltan_result.png)
 
 ---
 
@@ -37,7 +39,7 @@ These are the parts worth reading the code for.
 The exporter converts each frame matrix as a similarity transform `S · M · S` (where `S` is the axis-permutation matrix and is its own inverse). Applied to every node, each parent's trailing `S` cancels the child's leading `S`, so the tree stays coherent — *and* any real object rotation converts correctly, not just translations.
 
 ```python
-def _axis_vec_tuple(x, y, z):
+def _tiltan_axis_vec_tuple(x, y, z):
     """Verified against the viewer's bounding-box readout and exported mesh
     extents: the target uses the same Y-up convention as Cinema 4D, so the
     correct mapping here is identity. The frame matrix conversion S*M*S then
@@ -64,7 +66,7 @@ def _find_polygon_cache(obj):
 LOD and damage states are derived from object names rather than manual tagging, so the artist's scene organization *is* the export configuration:
 
 ```python
-def _lod_suffix(name):
+def _tiltan_lod_suffix(name):
     low = str(name).lower()
     if low.endswith("_high"):   return "High"
     if low.endswith("_medium"): return "Medium"
