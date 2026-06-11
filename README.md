@@ -24,8 +24,6 @@ The exporter walks a Cinema 4D object tree and emits a `.x` file whose structure
 
 A vanilla `.x` export gets geometry out but routinely breaks on the things that matter for a real-time asset: the rig flattens, LOD/damage variants lose their naming, pivots drift, or the model lands rotated or mis-scaled in the target engine. This exporter is built around those failure modes specifically, so an artist can model in Cinema 4D using a clean naming convention and get an asset that drops into the viewer **standing on its wheels, correctly scaled, with its turret and launcher still pivoting around the right points.**
 
-![Result in the Tiltan Model Viewer](docs/tiltan_result.png)
-
 ---
 
 ## Engineering highlights
