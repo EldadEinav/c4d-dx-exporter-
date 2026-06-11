@@ -17,7 +17,7 @@ The exporter walks a Cinema 4D object tree and emits a `.x` file whose structure
 - **Per-object mesh extraction.** Geometry is read from polygon objects (and from the cache of generators/deformers where present), including normals, UVs, and optional vertex color / tangent / bitangent.
 - **Multi-material support.** Per-polygon material assignment via selection tags is resolved into the exported material blocks, with texture-map copying alongside the `.x`.
 - **Coordinate-system conversion.** A configurable axis mapping plus a similarity transform on each frame matrix keeps the whole hierarchy consistent (see *Engineering highlights*).
-- **MeshNormals geometry format**, meters units, P/N splitter-safe output — the specific profile the Tiltan Viewer expects.
+- **MeshNormals geometry format**, meters units, P/N splitter-safe output — the specific profile the T Viewer expects.
 - **In-editor validation** of the hierarchy before export, surfacing problems instead of producing a broken file.
 
 ## Why use it
@@ -37,7 +37,7 @@ These are the parts worth reading the code for.
 The exporter converts each frame matrix as a similarity transform `S · M · S` (where `S` is the axis-permutation matrix and is its own inverse). Applied to every node, each parent's trailing `S` cancels the child's leading `S`, so the tree stays coherent — *and* any real object rotation converts correctly, not just translations.
 
 ```python
-def _tiltan_axis_vec_tuple(x, y, z):
+def _axis_vec_tuple(x, y, z):
     """Verified against the viewer's bounding-box readout and exported mesh
     extents: the target uses the same Y-up convention as Cinema 4D, so the
     correct mapping here is identity. The frame matrix conversion S*M*S then
@@ -64,7 +64,7 @@ def _find_polygon_cache(obj):
 LOD and damage states are derived from object names rather than manual tagging, so the artist's scene organization *is* the export configuration:
 
 ```python
-def _tiltan_lod_suffix(name):
+def _lod_suffix(name):
     low = str(name).lower()
     if low.endswith("_high"):   return "High"
     if low.endswith("_medium"): return "Medium"
