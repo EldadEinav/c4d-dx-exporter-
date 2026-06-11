@@ -1,8 +1,8 @@
-# DX Exporter — Cinema 4D → DirectX `.x` (Tiltan Viewer pipeline)
+# DX Exporter — Cinema 4D → DirectX .
 
 A production Cinema 4D plugin that exports scene hierarchies to **DirectX ASCII `.x`** for the Tiltan Model Viewer / AXE simulation pipeline. It handles the parts a generic exporter doesn't: a strict parent/child node hierarchy, LOD and damage-state naming conventions, per-object multi-material assignment, MeshNormals vertex format, and a coordinate-system conversion that keeps multi-level rigs (turrets, launchers, helper nulls) spatially coherent.
 
-![Exporter UI](docs/ui_exporter.png)
+
 
 > **Note on this repository.** This is a portfolio piece. The code is shared to demonstrate plugin architecture, the Cinema 4D Python API in anger, and the kind of hard-won, format-specific problem solving that real pipeline tools require. It is not a polished, fully-supported product release.
 
@@ -24,7 +24,6 @@ The exporter walks a Cinema 4D object tree and emits a `.x` file whose structure
 
 A vanilla `.x` export gets geometry out but routinely breaks on the things that matter for a real-time asset: the rig flattens, LOD/damage variants lose their naming, pivots drift, or the model lands rotated or mis-scaled in the target engine. This exporter is built around those failure modes specifically, so an artist can model in Cinema 4D using a clean naming convention and get an asset that drops into the viewer **standing on its wheels, correctly scaled, with its turret and launcher still pivoting around the right points.**
 
-![Result in the Tiltan Model Viewer](docs/tiltan_result.png)
 
 ---
 
